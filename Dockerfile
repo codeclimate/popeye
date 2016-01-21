@@ -1,5 +1,5 @@
 FROM haskell:7.10
-MAINTAINER Pat Bribin <pat@codeclimate.com>
+MAINTAINER Pat Brisbin <pat@codeclimate.com>
 
 WORKDIR /home/app
 
