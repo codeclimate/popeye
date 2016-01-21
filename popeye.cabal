@@ -13,6 +13,10 @@ build-type:          Simple
 -- extra-source-files:
 cabal-version:       >=1.10
 
+flag static
+  Description:   Compile statically
+  Default:       False
+
 library
   hs-source-dirs:      src
   exposed-modules:     Popeye.CLI
@@ -30,7 +34,12 @@ library
 executable popeye
   hs-source-dirs:      app
   main-is:             Main.hs
-  ghc-options:         -threaded -rtsopts -with-rtsopts=-N
+
+  if flag(static)
+    ghc-options:       -threaded -rtsopts -with-rtsopts=-N -static -optl-static -optl-pthread
+  else
+    ghc-options:       -threaded -rtsopts -with-rtsopts=-N
+
   build-depends:       base
                      , popeye
   default-language:    Haskell2010
