@@ -8,7 +8,7 @@ module Popeye.Users
     ) where
 
 import Control.Lens (set, view)
-import Control.Monad (forM)
+import Control.Monad (forM, mfilter)
 import Data.Maybe (catMaybes)
 import Data.Text (Text)
 import Network.AWS
@@ -53,4 +53,5 @@ getPublicKeyIds un = do
 getPublicKeyContent :: UserName -> PublicKeyId -> AWS (Maybe UserPublicKey)
 getPublicKeyContent un pk = do
     rsp <- send $ getSSHPublicKey (unUserName un) (unPublicKeyId pk) SSH
-    return $ (UserPublicKey . view spkSSHPublicKeyBody) <$> view gspkrsSSHPublicKey rsp
+    return $ (UserPublicKey . view spkSSHPublicKeyBody)
+        <$> (mfilter ((== Active) . view spkStatus) $ view gspkrsSSHPublicKey rsp)
