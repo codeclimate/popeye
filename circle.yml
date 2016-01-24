@@ -12,3 +12,15 @@ dependencies:
 test:
   override:
     - stack test
+
+deployment:
+  registry:
+    branch: master
+    commands:
+      - make release
+      - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
+      - docker push codeclimate/popeye
+
+notify:
+  webhooks:
+    - url: https://cc-slack-proxy.herokuapp.com/circle
