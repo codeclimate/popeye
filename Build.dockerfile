@@ -22,7 +22,7 @@ RUN cabal update && cabal install \
 COPY popeye.cabal /home/app/popeye.cabal
 RUN cabal install --dependencies-only
 
-COPY LICENSE /home/app
+COPY LICENSE /home/app/LICENSE
 COPY src /home/app/src
 COPY app /home/app/app
 RUN cabal configure -fstatic

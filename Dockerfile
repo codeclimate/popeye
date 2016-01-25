@@ -8,7 +8,7 @@ RUN apt-get update \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/*
 
-COPY build/ /home/app/
+COPY build/popeye /home/app/popeye
 COPY LICENSE /home/app/LICENSE
 
 ENTRYPOINT ["/home/app/popeye"]
