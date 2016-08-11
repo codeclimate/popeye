@@ -28,9 +28,9 @@ data User = User
     , userPublicKeys :: [UserPublicKey]
     }
 
-getUsers :: Group -> AWS [User]
-getUsers g = do
-    uns <- getUserNames g
+getUsers :: [Group] -> AWS [User]
+getUsers gs = do
+    uns <- concat <$> mapM getUserNames gs
 
     forM uns $ \un -> do
         pks <- mapM (getPublicKeyContent un) =<< getPublicKeyIds un

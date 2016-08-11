@@ -14,7 +14,7 @@ import qualified Data.Text as T
 import qualified Data.Text.IO as T
 
 data Options = Options
-    { oGroup :: Group
+    { oGroups :: [Group]
     , oDebug :: Bool
     }
 
@@ -27,7 +27,7 @@ run = do
     env <- set envLogger lgr <$> newEnv NorthVirginia Discover
 
     runResourceT . runAWS env $
-        (mapM_ outputUser =<< getUsers (oGroup opts))
+        (mapM_ outputUser =<< getUsers (oGroups opts))
 
 outputUser :: MonadIO m => User -> m ()
 outputUser u = do
@@ -42,7 +42,7 @@ getOptions = execParser $ info (helper <*> parseOptions)
 
 parseOptions :: Parser Options
 parseOptions = Options
-    <$> (Group . T.pack <$> strOption
+    <$> some (Group . T.pack <$> strOption
         (  short 'g'
         <> long "group"
         <> metavar "GROUP"
