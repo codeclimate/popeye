@@ -13,4 +13,8 @@ build/popeye: image build
 release: build/popeye
 	docker build --tag $(IMAGE_NAME) .
 
+check: release
+	docker run --rm --env-file .env \
+	  codeclimate/popeye --group ssh --group sshbastiononly
+
 .PHONY: image
