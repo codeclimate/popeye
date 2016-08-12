@@ -15,6 +15,6 @@ release: build/popeye
 
 check: release
 	docker run --rm --env-file .env \
-	  codeclimate/popeye --group ssh --group sshbastiononly
+	  codeclimate/popeye --group ssh --user pat@codeclimate.com
 
 .PHONY: image

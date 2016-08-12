@@ -5,10 +5,11 @@ module Popeye.Users
     , UserPublicKey(..)
     , Group(..)
     , getUsers
+    , getUser
     ) where
 
 import Control.Lens (set, view)
-import Control.Monad (forM, mfilter)
+import Control.Monad (mfilter)
 import Data.Maybe (catMaybes)
 import Data.Text (Text)
 import Network.AWS
@@ -29,16 +30,16 @@ data User = User
     }
 
 getUsers :: [Group] -> AWS [User]
-getUsers gs = do
-    uns <- concat <$> mapM getUserNames gs
+getUsers gs = mapM getUser =<< concat <$> mapM getUserNames gs
 
-    forM uns $ \un -> do
-        pks <- mapM (getPublicKeyContent un) =<< getPublicKeyIds un
+getUser :: UserName -> AWS User
+getUser un = do
+    pks <- mapM (getPublicKeyContent un) =<< getPublicKeyIds un
 
-        return User
-            { userName = un
-            , userPublicKeys = catMaybes pks
-            }
+    return User
+        { userName = un
+        , userPublicKeys = catMaybes pks
+        }
 
 getUserNames :: Group -> AWS [UserName]
 getUserNames g = do

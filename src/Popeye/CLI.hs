@@ -15,6 +15,7 @@ import qualified Data.Text.IO as T
 
 data Options = Options
     { oGroups :: [Group]
+    , oUsers :: [UserName]
     , oDebug :: Bool
     }
 
@@ -26,8 +27,12 @@ run = do
     lgr <- newLogger (if oDebug opts then Debug else Error) stderr
     env <- set envLogger lgr <$> newEnv NorthVirginia Discover
 
-    runResourceT . runAWS env $
-        (mapM_ outputUser =<< getUsers (oGroups opts))
+    runResourceT . runAWS env $ do
+        users <- (++)
+            <$> getUsers (oGroups opts)
+            <*> mapM getUser (oUsers opts)
+
+        mapM_ outputUser users
 
 outputUser :: MonadIO m => User -> m ()
 outputUser u = do
@@ -42,11 +47,17 @@ getOptions = execParser $ info (helper <*> parseOptions)
 
 parseOptions :: Parser Options
 parseOptions = Options
-    <$> some (Group . T.pack <$> strOption
+    <$> many (Group . T.pack <$> strOption
         (  short 'g'
         <> long "group"
         <> metavar "GROUP"
         <> help "IAM group to query"
+        ))
+    <*> many (UserName . T.pack <$> strOption
+        (  short 'u'
+        <> long "user"
+        <> metavar "USER"
+        <> help "IAM user name"
         ))
     <*> switch
         (  short 'd'
