@@ -16,14 +16,20 @@ RUN curl -o /home/app/cabal.config https://www.stackage.org/lts-4.2/cabal.config
 RUN cabal update && cabal install \
   amazonka \
   amazonka-iam \
+  hpack \
   lens \
   optparse-applicative
 
-COPY popeye.cabal /home/app/popeye.cabal
+COPY package.yaml /home/app/package.yaml
+
+RUN hpack
 RUN cabal install --dependencies-only
 
 COPY LICENSE /home/app/LICENSE
 COPY src /home/app/src
 COPY app /home/app/app
+# Run hpack again now that src/app are present, so it can correctly create the
+# modules declaration.
+RUN hpack
 RUN cabal configure -fstatic
 RUN cabal build
