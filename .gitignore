@@ -1,3 +1,4 @@
 .env
 .stack-work/
 build
+*.cabal
