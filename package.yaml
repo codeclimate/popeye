@@ -19,7 +19,6 @@ library:
   - amazonka
   - amazonka-iam
   - lens
-  - load-env
   - optparse-applicative
   - text
   - transformers

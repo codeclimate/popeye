@@ -6,7 +6,6 @@ import Popeye.Users
 import Control.Lens (set)
 import Control.Monad.IO.Class
 import Data.Semigroup ((<>))
-import LoadEnv
 import Network.AWS
 import Options.Applicative
 import System.IO (stderr)
@@ -22,8 +21,6 @@ data Options = Options
 
 run :: IO ()
 run = do
-    loadEnv
-
     opts <- getOptions
     lgr <- newLogger (if oDebug opts then Debug else Error) stderr
     env <- set envLogger lgr <$> newEnv Discover

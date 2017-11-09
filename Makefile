@@ -14,7 +14,7 @@ release: build/popeye
 	docker build --tag $(IMAGE_NAME) .
 
 check: release
-	docker run --rm --env-file .env \
+	docker run --rm --volume ~/.aws:/root/aws:ro \
 	  codeclimate/popeye --group ssh --user pat@codeclimate.com
 
 .PHONY: image
